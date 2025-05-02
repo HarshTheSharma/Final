@@ -18,41 +18,6 @@ int n, m, c;
 vector<pair<int, int>> graph;
 vector<vector<double>> pheromones;
 
-vector<int> greedyColoring() {
-    vector<int> coloring(n, -1);
-    vector<vector<int>> adj(n);
-
-    // Build adjacency list
-    for (auto& edge : graph) {
-        adj[edge.first].push_back(edge.second);
-        adj[edge.second].push_back(edge.first);
-    }
-
-    for (int node = 0; node < n; ++node) {
-        vector<bool> used(c, false); // Tracks colors used by neighbors
-
-        // Mark colors used by neighbors
-        for (int neighbor : adj[node]) {
-            int color = coloring[neighbor];
-            if (color != -1 && color < c)
-                used[color] = true;
-        }
-
-        // Assign the smallest available color
-        for (int color = 0; color < c; ++color) {
-            if (!used[color]) {
-                coloring[node] = color;
-                break;
-            }
-        }
-
-        // Optional: If no color is available, the node remains uncolored
-        // You can handle this case later in ACO
-    }
-
-    return coloring;
-}
-
 double findConflicts(const vector<int>& coloring, int node = -1, int color = -1) {
     int conflicts = 0;
     // conflicts for the whole graph
@@ -116,6 +81,7 @@ void ACOColoring(vector<int>& coloring, int& conflicts) {
         
         // Evaporate pheromones
         for (int i = 0; i < n; ++i) for (int color = 0; color < c; ++color) pheromones[i][color] *= (1.0 - RHO);
+        if (conflicts == 0) break; // Stop if no conflicts
     }
 }
 

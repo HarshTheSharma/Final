@@ -18,41 +18,6 @@ int n, m, c;
 vector<pair<int, int>> graph;
 vector<vector<double>> pheromones;
 
-vector<int> greedyColoring() {
-    vector<int> coloring(n, -1);
-    vector<vector<int>> adj(n);
-
-    // Build adjacency list
-    for (auto& edge : graph) {
-        adj[edge.first].push_back(edge.second);
-        adj[edge.second].push_back(edge.first);
-    }
-
-    for (int node = 0; node < n; ++node) {
-        vector<bool> used(c, false); // Tracks colors used by neighbors
-
-        // Mark colors used by neighbors
-        for (int neighbor : adj[node]) {
-            int color = coloring[neighbor];
-            if (color != -1 && color < c)
-                used[color] = true;
-        }
-
-        // Assign the smallest available color
-        for (int color = 0; color < c; ++color) {
-            if (!used[color]) {
-                coloring[node] = color;
-                break;
-            }
-        }
-
-        // Optional: If no color is available, the node remains uncolored
-        // You can handle this case later in ACO
-    }
-
-    return coloring;
-}
-
 double findConflicts(const vector<int>& coloring, int node = -1, int color = -1) {
     int conflicts = 0;
     // conflicts for the whole graph
@@ -69,6 +34,38 @@ double findConflicts(const vector<int>& coloring, int node = -1, int color = -1)
         }
         return 1.0 / (1 + conflicts);
     }
+}
+
+void greedyColoring(vector<int>& coloring, int& conflicts) {
+    coloring.assign(n, -1);
+    vector<vector<int>> adj(n);
+    conflicts = 0;
+    // adjacency list
+    for (auto& edge : graph) {
+        adj[edge.first].push_back(edge.second);
+        adj[edge.second].push_back(edge.first);
+    }
+
+    for (int node = 0; node < n; ++node) {
+        vector<bool> used(c, 0); // Colors used by neighbors
+        // Mark colors used by neighbors
+        for (int neighbor : adj[node]) if (coloring[neighbor] != -1 && coloring[neighbor] < c) used[coloring[neighbor]] = 1;
+
+        bool assigned = 0;
+        for (int color = 0; color < c; ++color) {
+            if (!used[color]) {
+                coloring[node] = color;
+                assigned = true;
+                break;
+            }
+        }
+
+        // If all colors are used, assign a random color
+        if (!assigned) coloring[node] = rand() % c;
+    }
+
+    // Add conflicts 
+    conflicts += findConflicts(coloring);
 }
 
 int makeDecision(int node, const vector<int>& coloring) {
@@ -131,15 +128,15 @@ int main(int argc, char* argv[]) {
 
     srand(time(0));
 
-    vector<int> best_coloring(n);
-    int best_conflicts = INT_MAX;
+    vector<int> coloring(n);
+    int conflicts = INT_MAX;
+    greedyColoring(coloring, conflicts);
+    ACOColoring(coloring, conflicts);
 
-    ACOColoring(best_coloring, best_conflicts);
-
-    cout << "conflict count: " << best_conflicts << "\n";
+    cout << "conflict count: " << conflicts << "\n";
     cout << "Coloring:\n";
     for (int i = 0; i < n; ++i)
-        cout << "Node# " << i << ": Color# " << best_coloring[i] << "\n";
+        cout << "Node# " << i << ": Color# " << coloring[i] << "\n";
 
     return 0;
 }
