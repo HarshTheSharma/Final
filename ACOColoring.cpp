@@ -22,12 +22,12 @@ double findConflicts(const vector<int>& coloring, int node = -1, int color = -1)
     int conflicts = 0;
     // conflicts for the whole graph
     if (node == -1 || color == -1) {
-        for (const auto& edge : graph) if (coloring[edge.first] == coloring[edge.second]) conflicts++;
+        for (pair<int, int>& edge : graph) if (coloring[edge.first] == coloring[edge.second]) conflicts++;
         return conflicts;
     
     // conflicts after coloring a single node
     } else {
-        for (auto& edge : graph) {
+        for (pair<int, int>& edge : graph) {
             int u = edge.first, v = edge.second;
             if ((u == node && coloring[v] == color) || (v == node && coloring[u] == color))
                 conflicts++;
@@ -97,15 +97,13 @@ int main(int argc, char* argv[]) {
 
     srand(time(0));
 
-    vector<int> best_coloring(n);
-    int best_conflicts = INT_MAX;
+    vector<int> coloring(n);
+    int conflicts = INT_MAX;
 
-    ACOColoring(best_coloring, best_conflicts);
+    ACOColoring(coloring, conflicts);
 
-    cout << "conflict count: " << best_conflicts << "\n";
+    cout << "conflict count: " << conflicts << "\n";
     cout << "Coloring:\n";
-    for (int i = 0; i < n; ++i)
-        cout << "Node# " << i << ": Color# " << best_coloring[i] << "\n";
-
+    for (int i = 0; i < n; i++) cout << i << " " << coloring[i] << "\n";
     return 0;
 }

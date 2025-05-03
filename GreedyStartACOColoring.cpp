@@ -22,12 +22,12 @@ double findConflicts(const vector<int>& coloring, int node = -1, int color = -1)
     int conflicts = 0;
     // conflicts for the whole graph
     if (node == -1 || color == -1) {
-        for (const auto& edge : graph) if (coloring[edge.first] == coloring[edge.second]) conflicts++;
+        for (pair<int, int>& edge : graph) if (coloring[edge.first] == coloring[edge.second]) conflicts++;
         return conflicts;
     
     // conflicts after coloring a single node
     } else {
-        for (auto& edge : graph) {
+        for (pair<int, int>& edge : graph) {
             int u = edge.first, v = edge.second;
             if ((u == node && coloring[v] == color) || (v == node && coloring[u] == color))
                 conflicts++;
@@ -41,7 +41,7 @@ void greedyColoring(vector<int>& coloring, int& conflicts) {
     vector<vector<int>> adj(n);
     conflicts = 0;
     // adjacency list
-    for (auto& edge : graph) {
+    for (pair<int, int>& edge : graph) {
         adj[edge.first].push_back(edge.second);
         adj[edge.second].push_back(edge.first);
     }
@@ -135,8 +135,6 @@ int main(int argc, char* argv[]) {
 
     cout << "conflict count: " << conflicts << "\n";
     cout << "Coloring:\n";
-    for (int i = 0; i < n; ++i)
-        cout << "Node# " << i << ": Color# " << coloring[i] << "\n";
-
+    for (int i = 0; i < n; i++) cout << i << " " << coloring[i] << "\n";
     return 0;
 }
