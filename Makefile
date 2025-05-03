@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -O2 -Wall -std=c++11
 
-TARGETS = ACOColoring EarlyGreedACOColoring ACOMultiThreaded
+TARGETS = ACOColoring EarlyGreedACOColoring GreedyStartACOMultiThreaded
 
 all: $(TARGETS)
 
@@ -11,8 +11,8 @@ ACOColoring: ACOColoring.cpp
 EarlyGreedACOColoring: GreedyStartACOColoring.cpp
 	$(CXX) $(CXXFLAGS) -o GreedyStartACOColoring GreedyStartACOColoring.cpp
 
-ACOMultiThreaded: ACOMultiThreaded.cpp
-	$(CXX) $(CXXFLAGS) -o ACOMultiThreaded ACOMultiThreaded.cpp
+GreedyStartACOMultiThreaded: GreedyStartACOMultiThreaded.cpp
+	$(CXX) $(CXXFLAGS) -o GreedyStartACOMultiThreaded GreedyStartACOMultiThreaded.cpp
 
 clean:
 	rm -f $(TARGETS)
