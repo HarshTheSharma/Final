@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -O2 -std=c++11
 
-TARGETS = ACOColoring EarlyGreedACOColoring GreedyStartACOMultiThreaded verify
+TARGETS = ACOColoring GreedyStartACOColoring verify
 
 all: $(TARGETS)
 
@@ -14,9 +14,5 @@ ACOColoring: ACOColoring.cpp
 GreedyStartACOColoring: GreedyStartACOColoring.cpp
 	$(CXX) $(CXXFLAGS) -o GreedyStartACOColoring GreedyStartACOColoring.cpp
 
-GreedyStartACOMultiThreaded: GreedyStartACOMultiThreaded.cpp
-	$(CXX) $(CXXFLAGS) -o GreedyStartACOMultiThreaded GreedyStartACOMultiThreaded.cpp
-
 clean:
-
 	rm -f $(TARGETS)

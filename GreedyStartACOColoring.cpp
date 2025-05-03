@@ -46,13 +46,13 @@ void greedyColoring(vector<int>& coloring, int& conflicts) {
         adj[edge.second].push_back(edge.first);
     }
 
-    for (int node = 0; node < n; ++node) {
+    for (int node = 0; node < n; node++) {
         vector<bool> used(c, 0); // Colors used by neighbors
         // Mark colors used by neighbors
         for (int neighbor : adj[node]) if (coloring[neighbor] != -1 && coloring[neighbor] < c) used[coloring[neighbor]] = 1;
 
         bool assigned = 0;
-        for (int color = 0; color < c; ++color) {
+        for (int color = 0; color < c; color++) {
             if (!used[color]) {
                 coloring[node] = color;
                 assigned = true;
@@ -84,7 +84,7 @@ int makeDecision(int node, const vector<int>& coloring) {
 
     double randVal = (double)rand() / INT_MAX * sum;
 
-    for (int color = 0; color < c; ++color) {
+    for (int color = 0; color < c; color++) {
         if (randVal <= probs[color]) return color;
         randVal -= probs[color];
     }
@@ -93,11 +93,11 @@ int makeDecision(int node, const vector<int>& coloring) {
 
 void ACOColoring(vector<int>& coloring, int& conflicts) {
     // Main Ant Colony Optimization loop
-    for (int it = 0; it < ITERATIONS; ++it) {
-        for (int ant = 0; ant < ANT_COUNT; ++ant) {
+    for (int it = 0; it < ITERATIONS; it++) {
+        for (int ant = 0; ant < ANT_COUNT; ant++) {
             vector<int> runColoring(n, -1);
 
-            for (int node = 0; node < n; ++node) {
+            for (int node = 0; node < n; node++) {
                 runColoring[node] = makeDecision(node, runColoring);
             }
 
@@ -108,11 +108,11 @@ void ACOColoring(vector<int>& coloring, int& conflicts) {
                 coloring = runColoring;
             }
             // Reinforce pheromones based on the ant's path
-            for (int i = 0; i < n; ++i) pheromones[i][runColoring[i]] += Q / (1.0 + conflicts);
+            for (int i = 0; i < n; i++) pheromones[i][runColoring[i]] += Q / (1.0 + conflicts);
         }
         
         // Evaporate pheromones
-        for (int i = 0; i < n; ++i) for (int color = 0; color < c; ++color) pheromones[i][color] *= (1.0 - RHO);
+        for (int i = 0; i < n; i++) for (int color = 0; color < c; color++) pheromones[i][color] *= (1.0 - RHO);
     }
 }
 
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
     graph.resize(m);
     pheromones.assign(n, vector<double>(c, 1.0));
     int u, v;
-    for (int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; i++) {
         cin >> u >> v;
         graph[i] = make_pair(u, v);
     }
