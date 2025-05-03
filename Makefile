@@ -1,9 +1,12 @@
 CXX = g++
-CXXFLAGS = -O2 -Wall -std=c++11
+CXXFLAGS = -O2 -std=c++11
 
-TARGETS = ACOColoring EarlyGreedACOColoring GreedyStartACOMultiThreaded
+TARGETS = ACOColoring EarlyGreedACOColoring GreedyStartACOMultiThreaded verify
 
 all: $(TARGETS)
+
+verify: verify.cpp
+	$(CXX) $(CXXFLAGS) -o verify verify.cpp
 
 ACOColoring: ACOColoring.cpp
 	$(CXX) $(CXXFLAGS) -o ACOColoring ACOColoring.cpp

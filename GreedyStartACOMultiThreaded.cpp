@@ -151,8 +151,7 @@ int main() {
     greedyColoring(result);
     ACOColoring(result);
 
-    cout << "conflict count: " << result.conflicts << "\n";
-    cout << "Coloring:\n";
+    cout << result.conflicts << "\n";
     for (int i = 0; i < n; ++i) cout << i << " " << result.coloring[i] << "\n";
     return 0;
 }

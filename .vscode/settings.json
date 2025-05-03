@@ -2,6 +2,7 @@
     "files.associations": {
         "acocoloring": "cpp",
         "cmath": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "fstream": "cpp"
     }
 }

@@ -133,8 +133,7 @@ int main(int argc, char* argv[]) {
     greedyColoring(coloring, conflicts);
     ACOColoring(coloring, conflicts);
 
-    cout << "conflict count: " << conflicts << "\n";
-    cout << "Coloring:\n";
+    cout << conflicts << "\n";
     for (int i = 0; i < n; i++) cout << i << " " << coloring[i] << "\n";
     return 0;
 }

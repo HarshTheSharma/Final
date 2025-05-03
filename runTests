@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Usage: ./runTests <executable> <test_directory>
+
+if [ $# -ne 2 ]; then
+  echo "Usage: $0 <executable> <test_directory>"
+  exit 1
+fi
+
+executable="$1"
+test_dir="$2"
+
+passed=0
+failed=0
+optimal_count=0
+
+if [ ! -x "./verify" ]; then
+  echo "Error: verify executable not found or not executable."
+  exit 1
+fi
+
+for f in "$test_dir"/test*.in
+do
+  basefile=$(basename "$f" .in)
+  expected_output_file="$test_dir/$basefile.out"
+  test_output_file="$test_dir/$basefile.test"
+  diff_file="$test_dir/$basefile.diff"
+
+  echo -n "Running $basefile... "
+
+  ./"$executable" < "$f" > "$test_output_file"
+
+  if [ ! -s "$test_output_file" ]; then
+    echo "Error: Test output is empty or failed to generate"
+    failed=$((failed + 1))
+    continue
+  fi
+
+  actual_conflict=$(head -n 1 "$test_output_file")
+  expected_conflict=$(head -n 1 "$expected_output_file")
+
+  if [ "$actual_conflict" == "$expected_conflict" ]; then
+    echo "Optimal Result Reached"
+    optimal_count=$((optimal_count + 1))
+  else
+    echo "Sub-Optimal Result"
+  fi
+
+  ./verify "$f" "$test_output_file"
+  verify_status=$?
+
+  if [ "$verify_status" -eq 0 ]; then
+    echo "Verify passed: Report is valid"
+    passed=$((passed + 1))
+  else
+    echo "Verify failed: coloring does not match conflicts"
+    failed=$((failed + 1))
+  fi
+
+  rm -f "$test_output_file"
+done
+
+total=$((passed + failed))
+echo ""
+echo "===== RESULTS ====="
+echo "$optimal_count Optimal Results of $total"
+echo "$passed PASSED out of $total ($failed failed)"
