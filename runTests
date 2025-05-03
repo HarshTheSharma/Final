@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Usage: ./runTests <executable> <test_directory>
+# used chatgpt to help with this bash script
 
 if [ $# -ne 2 ]; then
   echo "Usage: $0 <executable> <test_directory>"
