@@ -7,10 +7,10 @@
 
 using namespace std;
 
-#define ANT_COUNT 50
-#define ITERATIONS 100
+#define ANT_COUNT 100
+#define ITERATIONS 1000
 #define ALPHA 1.0
-#define BETA 2.0
+#define BETA 5.0
 #define RHO 0.1
 #define Q 100.0
 
