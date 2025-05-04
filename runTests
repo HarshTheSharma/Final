@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Usage: ./runTests <executable> <test_directory>
-# used chatgpt to help with this bash script
+# used chatgpt to help with this bash script. this language sucks who makes variables look like this
 
 if [ $# -ne 2 ]; then
   echo "Usage: $0 <executable> <test_directory>"

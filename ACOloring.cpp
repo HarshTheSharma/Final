@@ -28,9 +28,7 @@ double findConflicts(const vector<int>& coloring, int node = -1, int color = -1)
     // conflicts after coloring a single node
     } else {
         for (pair<int, int>& edge : graph) {
-            int u = edge.first, v = edge.second;
-            if ((u == node && coloring[v] == color) || (v == node && coloring[u] == color))
-                conflicts++;
+            if ((edge.first == node && coloring[edge.second] == color) || (edge.second == node && coloring[edge.first] == color)) conflicts++;
         }
         return 1.0 / (1 + conflicts);
     }
@@ -42,16 +40,19 @@ int makeDecision(int node, const vector<int>& coloring) {
 
     for (int color = 0; color < c; color++) {
         //pheromone information
-        double tau = pheromones[node][color];
+        double pheromone = pheromones[node][color];
         //heuristic information
-        double eta = findConflicts(coloring, node, color);
-        //building the probability distribution
-        probs[color] = pow(tau, ALPHA) * pow(eta, BETA);
+        double heuristic = findConflicts(coloring, node, color);
+        //building the probability list
+        probs[color] = pow(pheromone, ALPHA) * pow(heuristic, BETA);
         sum += probs[color];
     }
 
-    double randVal = (double)rand() / INT_MAX * sum;
+    // Normalize probabilities
+    for (double& prob : probs) prob /= sum;
 
+    // Select color based on probabilities
+    double randVal = (double)rand() / RAND_MAX;
     for (int color = 0; color < c; color++) {
         if (randVal <= probs[color]) return color;
         randVal -= probs[color];
@@ -59,29 +60,28 @@ int makeDecision(int node, const vector<int>& coloring) {
     return c - 1;
 }
 
-void ACOColoring(vector<int>& coloring, int& conflicts) {
+void ACOloring(vector<int>& coloring, int& conflicts) {
     // Main Ant Colony Optimization loop
     for (int it = 0; it < ITERATIONS; it++) {
         for (int ant = 0; ant < ANT_COUNT; ant++) {
-            vector<int> runColoring(n, -1);
+            vector<int> antColoring(n, -1);
 
-            for (int node = 0; node < n; node++) {
-                runColoring[node] = makeDecision(node, runColoring);
+            // Make Decicions until all nodes are colored and find conflicts
+            for (int node = 0; node < n; node++) antColoring[node] = makeDecision(node, antColoring);
+            int antConflicts = findConflicts(antColoring);
+
+            if (antConflicts < conflicts) {
+                conflicts = antConflicts;
+                coloring = antColoring;
+                if (conflicts == 0) break;
             }
 
-            int runConflicts = findConflicts(runColoring);
-
-            if (runConflicts < conflicts) {
-                conflicts = runConflicts;
-                coloring = runColoring;
-            }
             // Reinforce pheromones based on the ant's path
-            for (int i = 0; i < n; i++) pheromones[i][runColoring[i]] += Q / (1.0 + conflicts);
+            for (int i = 0; i < n; i++) pheromones[i][antColoring[i]] += Q / (1.0 + conflicts);
         }
         
         // Evaporate pheromones
         for (int i = 0; i < n; i++) for (int color = 0; color < c; color++) pheromones[i][color] *= (1.0 - RHO);
-        if (conflicts == 0) break; // Stop if no conflicts
     }
 }
 
@@ -96,11 +96,10 @@ int main(int argc, char* argv[]) {
     }
 
     srand(time(0));
-
     vector<int> coloring(n);
     int conflicts = INT_MAX;
 
-    ACOColoring(coloring, conflicts);
+    ACOloring(coloring, conflicts);
 
     cout << conflicts << "\n";
     for (int i = 0; i < n; i++) cout << i << " " << coloring[i] << "\n";
