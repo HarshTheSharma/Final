@@ -113,6 +113,7 @@ void ACOColoring(vector<int>& coloring, int& conflicts) {
         
         // Evaporate pheromones
         for (int i = 0; i < n; i++) for (int color = 0; color < c; color++) pheromones[i][color] *= (1.0 - RHO);
+        if (conflicts == 0) break; // Stop if no conflicts
     }
 }
 
