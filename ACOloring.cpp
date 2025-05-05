@@ -23,15 +23,14 @@ double findConflicts(const vector<int>& coloring, int node = -1, int color = -1)
     // conflicts for the whole graph
     if (node == -1 || color == -1) {
         for (pair<int, int>& edge : graph) if (coloring[edge.first] == coloring[edge.second]) conflicts++;
-        return conflicts;
     
     // conflicts after coloring a single node
     } else {
         for (pair<int, int>& edge : graph) {
             if ((edge.first == node && coloring[edge.second] == color) || (edge.second == node && coloring[edge.first] == color)) conflicts++;
         }
-        return 1.0 / (1 + conflicts);
     }
+    return conflicts;
 }
 
 int makeDecision(int node, const vector<int>& coloring) {
@@ -42,7 +41,7 @@ int makeDecision(int node, const vector<int>& coloring) {
         //pheromone information
         double pheromone = pheromones[node][color];
         //heuristic information
-        double heuristic = findConflicts(coloring, node, color);
+        double heuristic =  1.0 / (1 + (findConflicts(coloring, node, color)));
         //building the probability list
         probs[color] = pow(pheromone, ALPHA) * pow(heuristic, BETA);
         sum += probs[color];
@@ -77,7 +76,7 @@ void ACOloring(vector<int>& coloring, int& conflicts) {
             }
 
             // Reinforce pheromones based on the ant's path
-            for (int i = 0; i < n; i++) pheromones[i][antColoring[i]] += Q / (1.0 + conflicts);
+            for (int i = 0; i < n; i++) pheromones[i][antColoring[i]] += Q / (1.0 + antConflicts);
         }
         
         // Evaporate pheromones
