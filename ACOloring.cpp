@@ -9,9 +9,9 @@ using namespace std;
 
 #define ANT_COUNT 50
 #define ITERATIONS 100
-#define ALPHA 1.0
-#define BETA 5.0
-#define RHO 0.2
+#define ALPHA 0.7 // set to 1 to observe the algorithms random behavior when it comes to test 1
+#define BETA 7
+#define RHO 0.3
 #define Q 100.0
 
 int n, m, c;
