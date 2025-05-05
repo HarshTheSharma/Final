@@ -54,7 +54,7 @@ int makeDecision(int node, const vector<int>& coloring) {
         if (randVal <= probs[color]) return color;
         randVal -= probs[color];
     }
-    return c - 1;
+    return c - 1;   // Fallback to the last color if all else fails
 }
 
 void ACOloring(vector<int>& coloring, int& conflicts) {
@@ -67,10 +67,11 @@ void ACOloring(vector<int>& coloring, int& conflicts) {
             for (int node = 0; node < n; node++) antColoring[node] = makeDecision(node, antColoring);
             int antConflicts = findConflicts(antColoring);
 
+            // Update the best coloring found so far
             if (antConflicts < conflicts) {
                 conflicts = antConflicts;
                 coloring = antColoring;
-                if (conflicts == 0) break;
+                if (conflicts == 0) break; // Stop if a perfect coloring is found
             }
 
             // Reinforce pheromones based on the ant's path
