@@ -47,12 +47,10 @@ int makeDecision(int node, const vector<int>& coloring) {
         sum += probs[color];
     }
 
-    // Normalize probabilities
-    for (double& prob : probs) prob /= sum;
-
     // Select color based on probabilities
     double randVal = (double)rand() / RAND_MAX;
     for (int color = 0; color < c; color++) {
+        probs[color] /= sum;                    // Normalize probabilities
         if (randVal <= probs[color]) return color;
         randVal -= probs[color];
     }
